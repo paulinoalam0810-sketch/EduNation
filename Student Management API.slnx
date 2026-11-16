@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Students.API/Students.API.csproj" />
+  <Project Path="Students.Application.Tests/Students.Application.Tests.csproj" Id="94e2a81d-b2fe-4208-9f15-12a84b51c872" />
+  <Project Path="Students.Application/Students.Application.csproj" />
+  <Project Path="Students.Domain/Students.Domain.csproj" />
+  <Project Path="Students.Infraestructure/Students.Infrastructure.csproj" />
+</Solution>
