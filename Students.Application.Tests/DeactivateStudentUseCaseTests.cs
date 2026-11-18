@@ -1,6 +1,7 @@
 ﻿using Moq;
 using Students.Application.Abstractions.Persistence;
 using Students.Application.DeactivateStudent;
+using Students.Application.Exceptions;
 using Students.Domain.Entities;
 
 namespace Students.Application.Tests
@@ -45,6 +46,33 @@ namespace Students.Application.Tests
                     student,
                     It.IsAny<CancellationToken>()),
                 Times.Once);
+        }
+
+        [Fact]
+        public async Task DeactivateStudentUseCase_ShouldThrowNotFoundException_WhenStudentDoesNotExists()
+        {
+            //Arrange
+            var studentId = Guid.NewGuid();
+
+            _studentRepository
+                .Setup(r => r.GetByIdAsync(
+                    studentId,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync((Student?)null);
+
+            //Act
+            await Assert.ThrowsAsync<NotFoundException>(
+                async () => await _deactivateStudentUseCase.ExecuteAsync(
+                    studentId,
+                    CancellationToken.None)
+                );
+
+            //Assert
+            _studentRepository.Verify(
+                r => r.UpdateAsync(
+                    It.IsAny<Student>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Never);
         }
     }
 }
