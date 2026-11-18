@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Students.Application.UpdateStudent
+﻿namespace Students.Application.UpdateStudent
 {
     public class UpdateStudentRequest
     {
