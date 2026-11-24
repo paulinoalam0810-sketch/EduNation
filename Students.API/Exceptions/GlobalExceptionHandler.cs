@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -68,9 +68,7 @@ namespace Students.API.Exceptions
                 return true;
             }
 
-            if (exception is DbUpdateException dbUpdateException && 
-                dbUpdateException.GetBaseException() is SqlException sqlException &&
-                (sqlException.Number == 2601 || sqlException.Number == 2627)) 
+            if (IsUniqueConstraintViolation(exception))
             {
                 httpContext.Response.StatusCode = StatusCodes.Status409Conflict;
 
@@ -99,6 +97,37 @@ namespace Students.API.Exceptions
             await httpContext.Response.WriteAsJsonAsync(serverErrorDetails, cancellationToken);
 
             return true;
+        }
+        private static bool IsUniqueConstraintViolation(Exception exception)
+        {
+            if (exception is not DbUpdateException dbUpdateException)
+            {
+                return false;
+            }
+
+            var providerException = dbUpdateException.GetBaseException();
+            if (providerException is SqlException sqlException)
+            {
+                return sqlException.Number is 2601 or 2627;
+            }
+
+            return IsSqliteUniqueConstraintViolation(providerException);
+        }
+
+        private static bool IsSqliteUniqueConstraintViolation(Exception exception)
+        {
+            if (exception.GetType().FullName != "Microsoft.Data.Sqlite.SqliteException")
+            {
+                return false;
+            }
+
+            var exceptionType = exception.GetType();
+            var errorCodeValue = exceptionType.GetProperty("SqliteErrorCode")?.GetValue(exception);
+            var extendedErrorCodeValue = exceptionType.GetProperty("SqliteExtendedErrorCode")?.GetValue(exception);
+
+            return errorCodeValue is int errorCode && errorCode == 19
+                && extendedErrorCodeValue is int extendedErrorCode
+                && extendedErrorCode is 1555 or 2067;
         }
     }
 }

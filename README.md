@@ -1,108 +1,117 @@
-# Student Management API
+# EduNation
 
-A RESTful API for student management, built with **C#, ASP.NET Core 10, Entity Framework Core, and SQL Server**, following Clean Architecture principles.
+EduNation es una plataforma de gestión educativa cuyo desarrollo comienza con el módulo de gestión de estudiantes. La versión actual permite registrar y administrar estudiantes mediante una API REST construida con ASP.NET Core.
 
-## Overview
+## Funcionalidades implementadas
 
-Student Management API provides functionality to manage student records through a structured RESTful architecture.
+- Registrar estudiantes.
+- Consultar un estudiante activo por ID y listar los estudiantes activos.
+- Actualizar nombre, apellido, correo y fecha de nacimiento.
+- Desactivar estudiantes; los estudiantes desactivados dejan de aparecer en las consultas de estudiantes activos.
+- Validar en el dominio nombres, formato de correo y fecha de nacimiento.
+- Prevenir correos duplicados mediante un índice único y responder con `409 Conflict`.
+- Manejar excepciones de forma centralizada y devolver errores con `ProblemDetails`.
+- Desacoplar las respuestas de consulta y actualización de la entidad de dominio mediante `StudentResponse`.
+- Ejecutar pruebas unitarias y de integración; las pruebas de integración utilizan SQLite en memoria.
 
-The project focuses on maintainability, separation of concerns, data validation, centralized exception handling, and automated unit testing.
+### Rutas disponibles
 
-## Technologies
+| Método | Ruta | Comportamiento |
+|---|---|---|
+| `POST` | `/api/students` | Registra un estudiante. |
+| `GET` | `/api/students/{id}` | Consulta un estudiante activo por ID. |
+| `GET` | `/api/students` | Lista estudiantes activos. |
+| `PUT` | `/api/students/{id}` | Actualiza la información del estudiante. |
+| `DELETE` | `/api/students/{id}` | Desactiva al estudiante. |
 
-- C#
-- .NET 10
-- ASP.NET Core Web API
-- Entity Framework Core
-- SQL Server
-- xUnit
-- Moq
-- Git and GitHub
+## Arquitectura
 
-## Architecture
+La solución separa responsabilidades en estos proyectos:
 
-The solution follows Clean Architecture principles and separates responsibilities into five projects:
-
-| Project | Responsibility |
+| Proyecto | Responsabilidad |
 |---|---|
-| `Students.Domain` | Core entities and business rules |
-| `Students.Application` | Use cases, abstractions, and application logic |
-| `Students.Infrastructure` | Database access and persistence |
-| `Students.API` | HTTP endpoints and API configuration |
-| `Students.Application.Tests` | Automated unit tests |
+| `Students.Domain` | Entidad `Student` y reglas de validación del dominio. |
+| `Students.Application` | Casos de uso, abstracciones de persistencia y respuestas de aplicación. |
+| `Students.Infrastructure` | Persistencia con Entity Framework Core, repositorio, configuración y migraciones. |
+| `Students.API` | Endpoints HTTP, configuración de dependencias y manejo centralizado de excepciones. |
+| `Students.Application.Tests` | Pruebas unitarias y de integración. |
 
-## Features
+## Tecnologías
 
-- Create student records.
-- Retrieve a student by ID.
-- Retrieve all active students.
-- Update student information.
-- Deactivate student records.
-- Validate student information.
-- Handle duplicate email conflicts.
-- Centralized exception handling.
-- Structured error responses using Problem Details.
-- Asynchronous database operations.
-- Automated unit testing with xUnit and Moq.
+- C# y .NET 10.
+- ASP.NET Core Web API.
+- Entity Framework Core 10.
+- SQL Server para la persistencia de la API.
+- SQLite en memoria para pruebas de integración.
+- xUnit y Moq.
+- Git y GitHub.
 
-## Testing
+## Requisitos previos
 
-The application includes unit tests for application use cases using **xUnit** and **Moq**.
+- .NET 10 SDK.
+- SQL Server accesible desde el entorno donde se ejecuta la API.
+- Git.
+- Herramienta `dotnet-ef` 10.0.14 para aplicar migraciones.
 
-Current test coverage includes:
+  Si no está instalada:
 
-- `CreateStudentUseCase`
-- `GetStudentByIdUseCase`
-- `GetAllStudentsUseCase`
+  ```bash
+  dotnet tool install --global dotnet-ef --version 10.0.14
+  ```
 
-Tests cover successful operations, validation failures, missing records, and empty collections.
+  Si ya está instalada en otra versión:
 
-## Getting Started
+  ```bash
+  dotnet tool update --global dotnet-ef --version 10.0.14
+  ```
 
-### Prerequisites
+## Instalación y ejecución
 
-- .NET 10 SDK
-- SQL Server or SQL Server Express
-- Visual Studio 2022 or a compatible IDE
-
-### Installation
-
-1. Clone the repository:
+1. Clona el repositorio en una carpeta llamada `EduNation`:
 
    ```bash
-   git clone https://github.com/paulinoalam0810-sketch/Student-Management-API.git
+   git clone https://github.com/paulinoalam0810-sketch/Student-Management-API.git EduNation
+   cd EduNation
    ```
 
-2. Open the solution in Visual Studio.
-
-3. Configure the SQL Server connection string in the API project's configuration.
-
-4. Apply Entity Framework Core migrations:
+2. Restaura los paquetes:
 
    ```bash
-   dotnet ef database update --project Students.Infrastructure --startup-project Students.API
+   dotnet restore EduNation.slnx
    ```
 
-5. Run the API:
+3. Configura la conexión de SQL Server descrita a continuación.
+
+4. Aplica las migraciones existentes:
 
    ```bash
-   dotnet run --project Students.API
+   dotnet ef database update --project Students.Infraestructure/Students.Infrastructure.csproj --startup-project Students.API/Students.API.csproj
    ```
 
-## API Base Route
+5. Ejecuta la API:
 
-```text
-/api/students
+   ```bash
+   dotnet run --project Students.API/Students.API.csproj
+   ```
+
+## Conexión a SQL Server
+
+La API lee la cadena de conexión `DefaultConnection` mediante la configuración de ASP.NET Core. Antes de ejecutar la migración o la API, reemplaza el valor de esa clave en `Students.API/appsettings.json` por una cadena válida para tu instancia de SQL Server. No guardes credenciales reales en archivos versionados.
+
+La API configura SQL Server como proveedor de producción. SQLite se usa únicamente en el factory de pruebas de integración.
+
+## Ejecución de pruebas
+
+Desde la raíz del repositorio, ejecuta todas las pruebas de la solución:
+
+```bash
+dotnet test EduNation.slnx
 ```
 
-The API supports student creation, retrieval, updating, and deactivation.
+Las pruebas de integración levantan la API mediante `CustomWebApplicationFactory` y usan una conexión SQLite en memoria independiente por factory.
 
-## Purpose
+## Autor
 
-This project demonstrates practical knowledge of backend development with C# and .NET, including RESTful API design, relational database integration, Clean Architecture, dependency injection, exception handling, and automated testing.
+**Alam Paulino**
 
----
-
-**Author:** Alam Paulino
-
-**GitHub:** [paulinoalam0810-sketch](https://github.com/paulinoalam0810-sketch)
+GitHub: [paulinoalam0810-sketch](https://github.com/paulinoalam0810-sketch)

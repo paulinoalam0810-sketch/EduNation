@@ -1,7 +1,6 @@
-﻿using Students.Application.Abstractions.Persistence;
+using Students.Application.Abstractions.Persistence;
 using Students.Application.Exceptions;
-using Students.Domain.Entities;
-
+using Students.Application.Responses;
 
 namespace Students.Application.GetStudentById
 {
@@ -11,17 +10,28 @@ namespace Students.Application.GetStudentById
 
         public GetStudentByIdUseCase(IStudentRepository studentRepository)
         {
-            _studentRepository = studentRepository;        
+            _studentRepository = studentRepository;
         }
 
-        public async Task<Student> ExecuteAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<StudentResponse> ExecuteAsync(Guid id, CancellationToken cancellationToken)
         {
             var student = await _studentRepository.GetByIdAsync(id, cancellationToken);
 
             if (student == null)
+            {
                 throw new NotFoundException("Student not found.");
+            }
 
-            return student;
+            return new StudentResponse
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                DateOfBirth = student.DateOfBirth,
+                CreatedAt = student.CreatedAt,
+                IsActive = student.IsActive
+            };
         }
     }
 }

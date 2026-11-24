@@ -1,6 +1,6 @@
-﻿using Students.Application.Abstractions.Persistence;
-using Students.Domain.Entities;
+using Students.Application.Abstractions.Persistence;
 using Students.Application.Exceptions;
+using Students.Application.Responses;
 
 namespace Students.Application.UpdateStudent
 {
@@ -13,24 +13,33 @@ namespace Students.Application.UpdateStudent
             _studentRepository = studentRepository;
         }
 
-        public async Task<Student> ExecuteAsync(Guid id, UpdateStudentRequest request, CancellationToken cancellationToken)
+        public async Task<StudentResponse> ExecuteAsync(Guid id, UpdateStudentRequest request, CancellationToken cancellationToken)
         {
             var student = await _studentRepository.GetByIdAsync(id, cancellationToken);
 
             if (student == null)
-                 throw new NotFoundException("Student not found.");
+            {
+                throw new NotFoundException("Student not found.");
+            }
 
-            student.UpdatePersonalInfo
-            (
+            student.UpdatePersonalInfo(
                 request.FirstName,
                 request.LastName,
                 request.Email,
-                request.DateOfBirth
-            );
+                request.DateOfBirth);
 
             await _studentRepository.UpdateAsync(student, cancellationToken);
 
-            return student;
+            return new StudentResponse
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                DateOfBirth = student.DateOfBirth,
+                CreatedAt = student.CreatedAt,
+                IsActive = student.IsActive
+            };
         }
     }
 }

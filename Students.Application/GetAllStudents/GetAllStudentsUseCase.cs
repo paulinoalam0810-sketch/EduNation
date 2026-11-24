@@ -1,5 +1,5 @@
-﻿using Students.Application.Abstractions.Persistence;
-using Students.Domain.Entities;
+using Students.Application.Abstractions.Persistence;
+using Students.Application.Responses;
 
 namespace Students.Application.GetAllStudents
 {
@@ -12,11 +12,20 @@ namespace Students.Application.GetAllStudents
             _studentRepository = studentRepository;
         }
 
-        public async Task<IReadOnlyList<Student>> ExecuteAsync(CancellationToken cancellationToken)
+        public async Task<IReadOnlyList<StudentResponse>> ExecuteAsync(CancellationToken cancellationToken)
         {
             var students = await _studentRepository.GetAllAsync(cancellationToken);
 
-            return students;
+            return students.Select(student => new StudentResponse
+            {
+                Id = student.Id,
+                FirstName = student.FirstName,
+                LastName = student.LastName,
+                Email = student.Email,
+                DateOfBirth = student.DateOfBirth,
+                CreatedAt = student.CreatedAt,
+                IsActive = student.IsActive
+            }).ToList();
         }
     }
 }
