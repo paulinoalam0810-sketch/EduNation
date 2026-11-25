@@ -21,8 +21,11 @@ EduNation es una plataforma de gestión educativa cuyo desarrollo comienza con e
 | `POST` | `/api/students` | Registra un estudiante. |
 | `GET` | `/api/students/{id}` | Consulta un estudiante activo por ID. |
 | `GET` | `/api/students` | Lista estudiantes activos. |
+| `GET` | `/api/students/search` | Busca estudiantes activos y devuelve resultados paginados. |
 | `PUT` | `/api/students/{id}` | Actualiza la información del estudiante. |
 | `DELETE` | `/api/students/{id}` | Desactiva al estudiante. |
+
+La sensibilidad a mayúsculas y minúsculas de la búsqueda depende de la collation configurada en SQL Server.
 
 ## Arquitectura
 

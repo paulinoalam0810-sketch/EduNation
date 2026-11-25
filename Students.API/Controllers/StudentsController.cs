@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Students.API.Models;
 using Students.Application.CreateStudent;
 using Students.Application.DeactivateStudent;
 using Students.Application.GetAllStudents;
 using Students.Application.GetStudentById;
+using Students.Application.SearchStudents;
 using Students.Application.UpdateStudent;
 
 namespace Students.API.Controllers
@@ -14,17 +16,20 @@ namespace Students.API.Controllers
         private readonly CreateStudentUseCase _createStudentUseCase;
         private readonly GetStudentByIdUseCase _getStudentByIdUseCase;
         private readonly GetAllStudentsUseCase _getAllStudentsUseCase;
+        private readonly SearchStudentsUseCase _searchStudentsUseCase;
         private readonly UpdateStudentUseCase _updateStudentUseCase;
         private readonly DeactivateStudentUseCase _deactivateStudentUseCase;
         public StudentsController(CreateStudentUseCase createStudentUseCase,
                GetStudentByIdUseCase getStudentByIdUseCase,
                GetAllStudentsUseCase getAllStudentsUseCase,
+               SearchStudentsUseCase searchStudentsUseCase,
                UpdateStudentUseCase updateStudentUseCase,
                DeactivateStudentUseCase deactivateStudentUseCase)
         {
             _createStudentUseCase = createStudentUseCase;
             _getStudentByIdUseCase = getStudentByIdUseCase;
             _getAllStudentsUseCase = getAllStudentsUseCase;
+            _searchStudentsUseCase = searchStudentsUseCase;
             _updateStudentUseCase = updateStudentUseCase;
             _deactivateStudentUseCase = deactivateStudentUseCase;
         }
@@ -52,6 +57,23 @@ namespace Students.API.Controllers
             var students = await _getAllStudentsUseCase.ExecuteAsync(cancellationToken);
 
             return Ok(students);
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchStudents(
+            [FromQuery] StudentSearchRequest request,
+            CancellationToken cancellationToken)
+        {
+            var criteria = new StudentSearchCriteria
+            {
+                Search = request.Search,
+                PageNumber = request.PageNumber,
+                PageSize = request.PageSize
+            };
+
+            var result = await _searchStudentsUseCase.ExecuteAsync(criteria, cancellationToken);
+
+            return Ok(result);
         }
 
         [HttpPut("{id:guid}")]
