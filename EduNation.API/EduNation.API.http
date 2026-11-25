@@ -1,0 +1,35 @@
+@EduNation.API_HostAddress = http://localhost:5261
+
+### CreateStudent
+POST {{EduNation.API_HostAddress}}/api/students/CreateStudent
+Content-Type: application/json
+
+{
+    "firstName": "Jose",
+    "lastName": "Pérez",
+    "email": "jose.perez@example.com",
+    "dateOfBirth": "2003-05-15"
+}
+
+### GetStudentById
+GET {{EduNation.API_HostAddress}}/api/students/cc196f7a-6120-483e-b093-3ee8e78b37b7
+Aceppt: application/Json
+
+### GetAllStudents
+GET {{EduNation.API_HostAddress}}/api/students
+Accept: application/Json
+
+### UpdateStudent
+PUT {{EduNation.API_HostAddress}}/api/students/f8da5956-bd11-4976-9a5e-7eefce2cc73d
+Content-Type: application/Json
+
+{
+    "firstName": "Alam",
+    "lastName": "Paulino",
+    "email": "jose.perez@example.com",
+    "dateOfBirth": "2003-05-15"
+}
+
+### DeleteStudent
+DELETE {{EduNation.API_HostAddress}}/api/students/a1234567-1234-4567-8901-123456789abc
+Accept: application/Json

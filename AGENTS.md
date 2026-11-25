@@ -5,11 +5,11 @@
 EduNation is currently a student-management REST API. Treat only the features present in this repository as implemented; do not describe planned education modules as available.
 
 - `EduNation.slnx`: solution entry point.
-- `Students.Domain`: `Student` entity and domain validation rules.
-- `Students.Application`: use cases, persistence abstractions, search criteria and response models; references Domain.
-- `Students.Infraestructure`: EF Core `ApplicationDbContext`, entity configuration and repository implementations. The folder is spelled `Infraestructure`; the assembly and namespaces use `Infrastructure`.
-- `Students.API`: ASP.NET Core controllers, dependency-injection composition root, exception handling and SQL Server setup.
-- `Students.Application.Tests`: xUnit unit and integration tests; integration tests use SQLite in memory through `CustomWebApplicationFactory`.
+- `EduNation.Domain`: `Student` entity and domain validation rules.
+- `EduNation.Application`: use cases, persistence abstractions, search criteria and response models; references Domain.
+- `EduNation.Infrastructure`: EF Core `ApplicationDbContext`, entity configuration and repository implementations. The folder is spelled `Infraestructure`; the assembly and namespaces use `Infrastructure`.
+- `EduNation.API`: ASP.NET Core controllers, dependency-injection composition root, exception handling and SQL Server setup.
+- `EduNation.Application.Tests`: xUnit unit and integration tests; integration tests use SQLite in memory through `CustomWebApplicationFactory`.
 
 Technologies verified in the projects: C#, .NET 10, ASP.NET Core Web API, EF Core 10, SQL Server for production persistence, SQLite for integration tests, xUnit and Moq.
 
@@ -56,7 +56,7 @@ git diff --cached --check
 The existing EF migration command is:
 
 ```powershell
-dotnet ef database update --project Students.Infraestructure/Students.Infrastructure.csproj --startup-project Students.API/Students.API.csproj
+dotnet ef database update --project EduNation.Infrastructure/EduNation.Infrastructure.csproj --startup-project EduNation.API/EduNation.API.csproj
 ```
 
 Do not run migrations against a real or shared database unless the user specifically authorizes it.

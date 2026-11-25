@@ -33,11 +33,11 @@ La solución separa responsabilidades en estos proyectos:
 
 | Proyecto | Responsabilidad |
 |---|---|
-| `Students.Domain` | Entidad `Student` y reglas de validación del dominio. |
-| `Students.Application` | Casos de uso, abstracciones de persistencia y respuestas de aplicación. |
-| `Students.Infrastructure` | Persistencia con Entity Framework Core, repositorio, configuración y migraciones. |
-| `Students.API` | Endpoints HTTP, configuración de dependencias y manejo centralizado de excepciones. |
-| `Students.Application.Tests` | Pruebas unitarias y de integración. |
+| `EduNation.Domain` | Entidad `Student` y reglas de validación del dominio. |
+| `EduNation.Application` | Casos de uso, abstracciones de persistencia y respuestas de aplicación. |
+| `EduNation.Infrastructure` | Persistencia con Entity Framework Core, repositorio, configuración y migraciones. |
+| `EduNation.API` | Endpoints HTTP, configuración de dependencias y manejo centralizado de excepciones. |
+| `EduNation.Application.Tests` | Pruebas unitarias y de integración. |
 
 ## Tecnologías
 
@@ -88,18 +88,18 @@ La solución separa responsabilidades en estos proyectos:
 4. Aplica las migraciones existentes:
 
    ```bash
-   dotnet ef database update --project Students.Infraestructure/Students.Infrastructure.csproj --startup-project Students.API/Students.API.csproj
+   dotnet ef database update --project EduNation.Infrastructure/EduNation.Infrastructure.csproj --startup-project EduNation.API/EduNation.API.csproj
    ```
 
 5. Ejecuta la API:
 
    ```bash
-   dotnet run --project Students.API/Students.API.csproj
+   dotnet run --project EduNation.API/EduNation.API.csproj
    ```
 
 ## Conexión a SQL Server
 
-La API lee la cadena de conexión `DefaultConnection` mediante la configuración de ASP.NET Core. Antes de ejecutar la migración o la API, reemplaza el valor de esa clave en `Students.API/appsettings.json` por una cadena válida para tu instancia de SQL Server. No guardes credenciales reales en archivos versionados.
+La API lee la cadena de conexión `DefaultConnection` mediante la configuración de ASP.NET Core. Antes de ejecutar la migración o la API, reemplaza el valor de esa clave en `EduNation.API/appsettings.json` por una cadena válida para tu instancia de SQL Server. No guardes credenciales reales en archivos versionados.
 
 La API configura SQL Server como proveedor de producción. SQLite se usa únicamente en el factory de pruebas de integración.
 
